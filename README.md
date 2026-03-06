@@ -110,7 +110,7 @@ Publish any Obsidian note as a public web page. No extra infrastructure — ever
 
 ### Published note URL
 
-```
+```text
 https://obs.yourdomain.com/s/<slug>
 ```
 
@@ -185,7 +185,7 @@ The Worker rewrites these to the correct public URL at render time.
 
 **Served at:**
 
-```
+```text
 https://obs.yourdomain.com/s/<slug>/img/<filename>
 ```
 
