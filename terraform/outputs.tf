@@ -12,3 +12,8 @@ output "share_base_url" {
   description = "Base URL for shared notes"
   value       = "https://obs.gisk0.dev/s/<slug>"
 }
+
+output "xread_url" {
+  description = "Public URL for the xread worker"
+  value       = "https://xread.gisk0.dev"
+}
