@@ -1,11 +1,12 @@
 # obsidian-redirect
 
-Two things in one Cloudflare Worker:
+Three Cloudflare Workers on `gisk0.dev`:
 
-1. **Deep links** — make `obsidian://` URIs clickable in Telegram, Discord, Slack, and any chat app that only hyperlinks `https://` URLs
-2. **Public note sharing** — publish Obsidian notes as clean, readable web pages
+1. **Deep links** (`obs.gisk0.dev`) — make `obsidian://` URIs clickable in Telegram, Discord, Slack, and any chat app that only hyperlinks `https://` URLs
+2. **Public note sharing** (`obs.gisk0.dev`) — publish Obsidian notes as clean, readable web pages
+3. **X Reader** (`xread.gisk0.dev`) — convert X (Twitter) posts, threads, and articles into clean readable HTML for Instapaper and other read-later services
 
-Deploy in ~5 minutes. Runs on Cloudflare's free tier.
+All run on Cloudflare's free tier.
 
 ## Quick Start
 
@@ -247,6 +248,50 @@ Set via `npx wrangler secret put PUBLISH_TOKEN`.
 ```bash
 npm run dev   # starts wrangler dev server at http://localhost:8787
 ```
+
+---
+
+---
+
+## Feature 3 — X Reader (`xread.gisk0.dev`)
+
+Convert any X post, thread, or article into clean readable HTML — with full text and images. Built for saving to Instapaper (or any read-later service).
+
+### How it works
+
+1. Shortcut shares an X URL to the worker
+2. Worker fetches content via [wallabax](https://wallabax.vercel.app) (bypasses X's JS wall)
+3. Returns clean HTML that Instapaper can parse and render
+
+### Endpoints
+
+**Get readable HTML:**
+
+```
+GET https://xread.gisk0.dev/?url=https://x.com/user/status/123
+```
+
+**Save to Instapaper directly:**
+
+```
+GET https://xread.gisk0.dev/save?username=you%40email.com&password=yourpass&url=https://x.com/user/status/123
+```
+
+Returns `200 Saved` on success.
+
+### iOS Shortcut setup
+
+3-step shortcut with Share Sheet enabled:
+
+1. **Get Contents of URL** → `https://xread.gisk0.dev/save?username=YOUR_EMAIL&password=YOUR_PASS&url=` + Shortcut Input
+2. **Show Notification** → `✅ Saved to Instapaper`
+
+> Append Shortcut Input **raw** (no URL encode step) — the worker handles double-encoding from iOS automatically.
+
+### Limitations
+
+- Wallabax has a 100 req/day free tier limit (resets daily) — fine for personal use
+- Images from `pbs.twimg.com` may not display in Instapaper's reader mode (Twitter hotlink protection). The HTML is correct; it's a Twitter-side restriction.
 
 ---
 
