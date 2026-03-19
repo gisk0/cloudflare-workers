@@ -55,3 +55,21 @@ resource "cloudflare_workers_route" "obs_gisk0_dev" {
   pattern = "obs.gisk0.dev/*"
   script  = cloudflare_workers_script.obsidian_redirect.script_name
 }
+
+# ─── xread Worker ─────────────────────────────────────────────────────────────
+# Proxies X/Twitter URLs through xtomd.com to render readable HTML.
+
+resource "cloudflare_workers_script" "xread" {
+  account_id         = var.account_id
+  script_name        = "xread"
+  content_file       = "${path.module}/../workers/xread/index.js"
+  content_sha256     = filesha256("${path.module}/../workers/xread/index.js")
+  main_module        = "index.js"
+  compatibility_date = "2024-01-01"
+}
+
+resource "cloudflare_workers_route" "xread_gisk0_dev" {
+  zone_id = var.zone_id
+  pattern = "xread.gisk0.dev/*"
+  script  = cloudflare_workers_script.xread.script_name
+}
